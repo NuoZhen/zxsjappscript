@@ -11,7 +11,7 @@ from selenium.common import NoSuchElementException
 
 
 # Cookie登录
-def login_by_cookies(driver, cookie_str, filename='cookiestest.txt'):
+def login_by_cookies(driver, cookie_str, filename='cookies.txt'):
     """使用提供的Cookie字符串或文件中的cookies进行登录"""
     if not cookie_str:
         if not cookies.read_cookies(driver, filename):
