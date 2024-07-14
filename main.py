@@ -39,20 +39,29 @@ def url_info():
 
 
 if __name__ == '__main__':
-    open_url(url)
-    time.sleep(random.randint(1, 3))
-    login.login_by_cookies(driver, cookie_str)
+    # 程序开始
+    print("程序开始执行...")
 
-    like.like_and_cancel(driver)
+    cookie_str = input("请输入你的Cookie：")
 
-    article.article_comment(driver)
+    if cookie_str != "":
+        open_url(url)
+        time.sleep(random.randint(1, 3))
+        login.login_by_cookies(driver, cookie_str)
 
-    article.article_post(driver)
+        like.like_and_cancel(driver)
 
-    comment.comment_delete(driver)
+        article.article_comment(driver)
 
-    # url_info()
+        article.article_post(driver)
 
-    # 关闭浏览器
-    driver.close()
+        comment.comment_delete(driver)
+
+        # url_info()
+
+        # 关闭浏览器
+        driver.close()
+    else:
+        print("请重启，重新输入Cookie！")
+
     print("程序完成,退出成功！")
