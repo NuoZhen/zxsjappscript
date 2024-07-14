@@ -1,6 +1,7 @@
 """
 点赞模块
 """
+
 import article
 import random
 import time
@@ -29,7 +30,7 @@ def like_and_cancel(driver):
     # 一次性收集所有点赞按钮和标题
     css = '.post-card-panel .classify-operate-panel .operate-panel .btn.like'
     like_buttons = driver.find_elements(By.CSS_SELECTOR, css)
-    titles = article.article_title(driver)  # 获取所有文章标题
+    titles = article.article_titles(driver)  # 获取所有文章标题
 
     # 遍历并处理所有点赞按钮
     for index, element in enumerate(like_buttons):
@@ -72,3 +73,4 @@ def safe_toggle_like(driver, element):
         time.sleep(random.randint(1, 2))
     except Exception as e:
         print(f"An error occurred while trying to toggle like: {e}")
+
