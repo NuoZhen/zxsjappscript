@@ -49,18 +49,18 @@ if __name__ == '__main__':
         time.sleep(random.randint(1, 3))
         login.login_by_cookies(driver, cookie_str)
 
-        like.like_and_cancel(driver)
+        # like.like_and_cancel(driver)
 
-        article.article_comment(driver)
+        # article.article_comment(driver)
 
-        article.article_post(driver)
+        # article.article_post(driver)
 
-        comment.comment_delete(driver)
+        # comment.comment_delete(driver)
 
         # url_info()
 
         # 关闭浏览器
-        driver.close()
+        # driver.close()
     else:
         print("请重启，重新输入Cookie！")
 

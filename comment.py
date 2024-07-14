@@ -87,6 +87,7 @@ def comment_delete(driver):
         driver.execute_script("arguments[0].click();", confirm_btn)
         print("文章删除成功！")
         # 删除后不会跳转，且需要刷新，暂时先关闭，然后切回主页标签
+        time.sleep(2)   # 等待一点时间让页面响应
         driver.close()  # 关闭当前窗口
         driver.switch_to.window(window_handles[0])  # 切回原窗口
     except TimeoutException as e:

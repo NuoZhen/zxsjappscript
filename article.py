@@ -55,6 +55,8 @@ def article_comment(driver):
             time.sleep(0.5)
             # 使用JavaScript点击元素
             driver.execute_script("arguments[0].click();", post_btn)
+            # 等待一点时间让页面响应
+            time.sleep(2)
 
             # 完成操作后关闭窗口并切回原窗口
             driver.close()  # 关闭当前窗口
@@ -86,19 +88,17 @@ def article_post(driver):
 
         # 判断今日是否已打卡
         # 使用ID找到 <div> 进行操作，获取内部的文本
-        if driver.find_element(By.ID, 'simple-text-prompt').find_element(By.TAG_NAME, 'p').text == "今日已打卡！":
-            print("今日已打卡！")
-        else:
+        try:
+            test_prompt = driver.find_element(By.ID, 'simple-text-prompt').find_element(By.TAG_NAME, 'p')
+            if test_prompt.text == "今日已打卡！":
+                print("今日已打卡！")
+        except Exception:
             # 等待打卡面板可见
             keep_panel_text = WebDriverWait(driver, 10).until(
                 EC.visibility_of_element_located(
                     (By.CSS_SELECTOR, '.page-container .left-board .quick-post-panel .keep-panel .title'))
             ).text
-
-            # 使用 CSS 选择器找到 p 元素
-            # p_element = driver.find_element(By.XPATH, '//p[@data-we-empty-p]')
             # 查找可输入的 p 元素
-            # TODO: 测试下这个能否成功找到 p 元素，记得把点击注释掉
             p_element = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.XPATH, '//p[@data-we-empty-p]'))
             )
@@ -106,10 +106,17 @@ def article_post(driver):
             driver.execute_script("arguments[0].scrollIntoView(true);", p_element)
             # 等待一点时间让页面响应
             time.sleep(0.5)
-            # 使用 send_keys 方法写入文本
-            p_element.send_keys(keep_panel_text)
-            # 等待一点时间让页面响应
-            time.sleep(1)
+            # 删除 <br> 标签
+            driver.execute_script("""
+                var p = arguments[0];
+                p.innerHTML = p.innerHTML.replace(/<br>/g, '');
+            """, p_element)
+            # 插入文本
+            driver.execute_script("""
+                var p = arguments[0];
+                var text = arguments[1];
+                p.innerHTML = text + p.innerHTML;
+            """, p_element, keep_panel_text)
 
             # 等待打卡按钮变为可点击状态
             post_btn = WebDriverWait(driver, 10).until(
