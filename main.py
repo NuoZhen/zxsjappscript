@@ -27,7 +27,7 @@ driver = webdriver.Edge(options=edge_options)  # 定义Edge浏览器
 # browse = webdriver.Chrome(options=chrome_options)     # 定义Chrome浏览器
 
 # 配置日志
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 

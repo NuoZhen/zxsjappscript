@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.common import NoSuchElementException
 
 # 配置日志
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
