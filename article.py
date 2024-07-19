@@ -57,6 +57,7 @@ def article_comment(driver):
             driver.execute_script("arguments[0].click();", post_btn)
             # 等待一点时间让页面响应
             time.sleep(2)
+            print("评论发表成功！")
 
             # 完成操作后关闭窗口并切回原窗口
             driver.close()  # 关闭当前窗口
@@ -142,13 +143,15 @@ def article_delete(driver):
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'body')))
         print(f"当前页面URL：{driver.current_url}")
 
+        # 将页面滚动到顶部
+        driver.execute_script("window.scrollTo(0, 0);")
         # 使用CSS选择器找到菜单按钮
         menu_btn = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable(
                 (By.CSS_SELECTOR, '.page-container .left-board .article-panel .nav-panel .more-menu-panel'))
         )
         # 滚动到元素位置
-        driver.execute_script("arguments[0].scrollIntoView(true);", menu_btn)
+        # driver.execute_script("arguments[0].scrollIntoView(true);", menu_btn)
         # 等待一点时间让页面响应
         time.sleep(0.5)
         # 点击元素, 使用JS好像不行

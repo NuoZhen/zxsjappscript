@@ -4,6 +4,8 @@ Cookie模块
 
 import json
 
+import utils
+
 
 # 保存Cookie
 def save_cookies(driver, filename):
@@ -21,11 +23,12 @@ def read_cookies(driver, filename):
             for cookie in cookies_list:
                 driver.add_cookie(cookie)
             driver.refresh()
+            utils.url_info(driver)
+        return cookies_list
     except FileNotFoundError:
-        print("Cookie文件未找到，请先登录保存Cookie。")
-        return False
+        print("Cookie文件未找到！")
+        return FileNotFoundError
     except json.JSONDecodeError:
-        print("Cookie文件格式错误，请检查文件内容。")
-        return False
-    return True
+        print("Cookie文件格式错误，请检查文件内容！")
+        return json.JSONDecodeError
 

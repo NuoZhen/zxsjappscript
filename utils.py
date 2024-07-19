@@ -3,6 +3,11 @@
 """
 
 import json
+import logging
+
+# 配置日志
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 # 字符串转字典
@@ -33,3 +38,8 @@ def parse_cookie_string(cookie_str):
     # 将字典转换为JSON格式的字符串并返回
     return json.loads(json.dumps(output))
 
+
+def url_info(driver):
+    # 请求一系列关于浏览器的信息, 包括窗口句柄、浏览器尺寸/位置、cookie、警报等
+    logger.info(f"当前页面标题：{driver.title}")
+    logger.info(f"当前页面URL：{driver.current_url}")

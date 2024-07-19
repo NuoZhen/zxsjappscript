@@ -5,8 +5,10 @@ from selenium.webdriver.support import expected_conditions as EC
 
 import article
 import comment
+import cookies
 import like
 import login
+import logging
 import random
 import time
 
@@ -24,6 +26,10 @@ driver = webdriver.Edge(options=edge_options)  # 定义Edge浏览器
 # chrome_options = webdriver.EdgeOptions()
 # browse = webdriver.Chrome(options=chrome_options)     # 定义Chrome浏览器
 
+# 配置日志
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 # 打开URL
 def open_url(url):
@@ -32,36 +38,33 @@ def open_url(url):
     driver.implicitly_wait(5)  # 等待加载完成
 
 
-def url_info():
-    # 请求一系列关于浏览器的信息, 包括窗口句柄、浏览器尺寸/位置、cookie、警报等
-    print(f"当前页面标题：{driver.title}")
-    print(f"当前页面URL：{driver.current_url}")
-
-
 if __name__ == '__main__':
     # 程序开始
-    print("程序开始执行...")
+    logger.info("程序开始执行...")
 
-    cookie_str = input("请输入你的Cookie：")
+    open_url(url)
+    time.sleep(random.randint(1, 3))
 
-    if cookie_str != "":
-        open_url(url)
-        time.sleep(random.randint(1, 3))
-        login.login_by_cookies(driver, cookie_str)
+    if login.login_by_cookies(driver):
+        # 点赞
+        like.like_and_cancel(driver)
 
-        # like.like_and_cancel(driver)
+        # 发表评论
+        article.article_comment(driver)
 
-        # article.article_comment(driver)
+        # 发表文章
+        article.article_post(driver)
 
-        # article.article_post(driver)
+        # 删除文章测试
+        # open_url('https://zxsj.wanmei.com/zxworld/zxqsj-publish/article-detail.html?aid=')
+        # article.article_delete(driver)
 
-        # comment.comment_delete(driver)
-
-        # url_info()
+        # 删除评论
+        comment.comment_delete(driver)
 
         # 关闭浏览器
-        # driver.close()
+        driver.close()
     else:
-        print("请重启，重新输入Cookie！")
+        logger.error("请重新启动程序！")
 
-    print("程序完成,退出成功！")
+    logger.info("程序完成,退出成功！")
