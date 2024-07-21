@@ -3,8 +3,12 @@ Cookie模块
 """
 
 import json
-
+import logging
 import utils
+
+# 配置日志
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 # 保存Cookie
@@ -26,9 +30,9 @@ def read_cookies(driver, filename):
             utils.url_info(driver)
         return cookies_list
     except FileNotFoundError:
-        print("Cookie文件未找到！")
+        logger.error("Cookie文件未找到！")
         return FileNotFoundError
     except json.JSONDecodeError:
-        print("Cookie文件格式错误，请检查文件内容！")
+        logger.error("Cookie文件格式错误，请检查文件内容！")
         return json.JSONDecodeError
 

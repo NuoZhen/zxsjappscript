@@ -3,12 +3,17 @@
 """
 
 import article
+import logging
 import random
 import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
+# 配置日志
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 # 点赞+取消
@@ -38,9 +43,9 @@ def like_and_cancel(driver):
             # 点赞
             safe_toggle_like(driver, element)
             # 输出文章标题
-            print(f"已点赞文章：{titles[index].text}")
+            logger.info(f"点赞文章：{titles[index].text}")
         except IndexError:
-            print("点赞按钮和文章标题数量不匹配，跳过剩余操作。")
+            logger.error("点赞按钮和文章标题数量不匹配，跳过剩余操作。")
             break
 
     time.sleep(2)  # 等待按钮加载
@@ -55,9 +60,9 @@ def like_and_cancel(driver):
             # 取消点赞
             safe_toggle_like(driver, element)
             # 输出文章标题
-            print(f"已取消点赞文章：{titles[index].text}")
+            logger.info(f"已取消点赞文章：{titles[index].text}")
         except IndexError:
-            print("已点赞按钮和文章标题数量不匹配，跳过剩余操作。")
+            logger.error("已点赞按钮和文章标题数量不匹配，跳过剩余操作。")
             break
 
 
@@ -72,5 +77,5 @@ def safe_toggle_like(driver, element):
         # 避免触发速率限制
         time.sleep(random.randint(1, 2))
     except Exception as e:
-        print(f"An error occurred while trying to toggle like: {e}")
+        logger.error(f"点赞操作时发生错误: {e}")
 

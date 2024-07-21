@@ -1,6 +1,7 @@
 """
 文章模块
 """
+import logging
 import random
 import time
 
@@ -9,67 +10,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
+import utils
 
-# 文章评论
-def article_comment(driver):
-    # 收集文章标题元素并随机一个点击
-    try:
-        title_elements = article_titles(driver)
-        if title_elements:
-            selected_title = random.choice(title_elements)
-            # 滚动到元素位置
-            driver.execute_script("arguments[0].scrollIntoView(true);", selected_title)
-            # 等待一点时间让页面响应
-            time.sleep(0.5)
-            # 使用JavaScript点击元素
-            driver.execute_script("arguments[0].click();", selected_title)
-
-            # 等待新窗口打开并切换
-            WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
-            window_handles = driver.window_handles
-            driver.switch_to.window(window_handles[-1])
-
-            # 等待页面完全加载
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'body')))
-
-            # 使用CSS选择器找到文章标题并打印文章标题
-            title_text = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.CSS_SELECTOR, '.article-panel .title-panel'))).text
-            print(f"当前文章标题：{title_text}")
-            print(f"当前页面URL：{driver.current_url}")
-
-            # 使用CSS选择器找到一键评论元素
-            btn_like = driver.find_element(By.CSS_SELECTOR, '.comment-input-panel .header-panel .btn.like.null')
-            # 滚动到元素位置
-            driver.execute_script("arguments[0].scrollIntoView(true);", btn_like)
-            # 等待一点时间让页面响应
-            time.sleep(0.5)
-            # 使用JavaScript点击元素
-            driver.execute_script("arguments[0].click();", btn_like)
-
-            # 使用CSS选择器找到评论按钮元素
-            post_btn = driver.find_element(By.CSS_SELECTOR, '.comment-input-panel .post-operate-panel .post-btn.on')
-            # 滚动到元素位置
-            driver.execute_script("arguments[0].scrollIntoView(true);", post_btn)
-            # 等待一点时间让页面响应
-            time.sleep(0.5)
-            # 使用JavaScript点击元素
-            driver.execute_script("arguments[0].click();", post_btn)
-            # 等待一点时间让页面响应
-            time.sleep(2)
-            print("评论发表成功！")
-
-            # 完成操作后关闭窗口并切回原窗口
-            driver.close()  # 关闭当前窗口
-            driver.switch_to.window(window_handles[0])  # 切回原窗口
-        else:
-            print("没有找到文章标题元素。")
-    except TimeoutException as e:
-        print(f"等待元素超时：{e}")
-    except NoSuchElementException as e:
-        print(f"未能找到页面上的元素：{e}")
-    except Exception as e:
-        print(f"发生了错误：{e}")
+# 配置日志
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def article_post(driver):
@@ -92,7 +37,7 @@ def article_post(driver):
         try:
             test_prompt = driver.find_element(By.ID, 'simple-text-prompt').find_element(By.TAG_NAME, 'p')
             if test_prompt.text == "今日已打卡！":
-                print("今日已打卡！")
+                logger.info("今日已打卡！")
         except Exception:
             # 等待打卡面板可见
             keep_panel_text = WebDriverWait(driver, 10).until(
@@ -127,21 +72,21 @@ def article_post(driver):
             )
             # 使用JavaScript点击元素
             driver.execute_script("arguments[0].click();", post_btn)
-            print("动态发表成功！")
+            logger.info("动态发表成功！")
             article_delete(driver)
     except TimeoutException as e:
-        print(f"等待元素超时：{e}")
+        logger.error(f"等待元素超时：{e}")
     except NoSuchElementException as e:
-        print(f"未能找到页面上的元素：{e}")
+        logger.error(f"未能找到页面上的元素：{e}")
     except Exception as e:
-        print(f"发生了错误：{e}")
+        logger.error(f"发生了错误：{e}")
 
 
 def article_delete(driver):
     try:
         # 等待页面完全加载
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'body')))
-        print(f"当前页面URL：{driver.current_url}")
+        logger.info(f"当前页面URL：{driver.current_url}")
 
         # 将页面滚动到顶部
         driver.execute_script("window.scrollTo(0, 0);")
@@ -150,8 +95,6 @@ def article_delete(driver):
             EC.element_to_be_clickable(
                 (By.CSS_SELECTOR, '.page-container .left-board .article-panel .nav-panel .more-menu-panel'))
         )
-        # 滚动到元素位置
-        # driver.execute_script("arguments[0].scrollIntoView(true);", menu_btn)
         # 等待一点时间让页面响应
         time.sleep(0.5)
         # 点击元素, 使用JS好像不行
@@ -170,27 +113,15 @@ def article_delete(driver):
         # 使用JavaScript点击元素
         driver.execute_script("arguments[0].click();", delete_btns[1])
 
-        time.sleep(1)
-        # 使用CSS选择器找到确认按钮
-        confirm_btn = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(
-                (By.CSS_SELECTOR,
-                 '.u-popup .popup-normal.confirm-popup .btn-box .confirm'))
-        )
-        # 滚动到元素位置
-        driver.execute_script("arguments[0].scrollIntoView(true);", confirm_btn)
-        # 等待一点时间让页面响应
-        time.sleep(0.5)
-        # 使用JavaScript点击元素
-        driver.execute_script("arguments[0].click();", confirm_btn)
-        print("文章删除成功！")
+        utils.find_confirm_btn(driver)
+        logger.info("文章删除成功！")
         # 删除后会跳转, 测试时为首页
     except TimeoutException as e:
-        print(f"等待元素超时：{e}")
+        logger.error(f"等待元素超时：{e}")
     except NoSuchElementException as e:
-        print(f"未能找到页面上的元素：{e}")
+        logger.error(f"未能找到页面上的元素：{e}")
     except Exception as e:
-        print(f"发生了错误：{e}")
+        logger.error(f"发生了错误：{e}")
 
 
 # 使用CSS选择器找到文章标题元素

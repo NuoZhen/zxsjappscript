@@ -1,29 +1,23 @@
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 import article
 import comment
-import cookies
 import like
 import login
 import logging
 import random
 import time
 
-# 诛仙世界APP网页地址
+# 诛仙世界助手网页地址
 url = 'https://zxsj.wanmei.com/zxworld/zxqsj-publish/circle.html'
 
-# Cookie
-cookie_str = ''
-
 edge_options = webdriver.EdgeOptions()
-edge_options.add_experimental_option('detach', True)  # 设置浏览器不关闭
+edge_options.add_experimental_option('detach', True)  # 设置浏览器不自动关闭
 driver = webdriver.Edge(options=edge_options)  # 定义Edge浏览器
 
 
 # chrome_options = webdriver.EdgeOptions()
+# edge_options.add_experimental_option('detach', True)  # 设置浏览器不自动关闭
 # browse = webdriver.Chrome(options=chrome_options)     # 定义Chrome浏览器
 
 # 配置日志
@@ -50,14 +44,10 @@ if __name__ == '__main__':
         like.like_and_cancel(driver)
 
         # 发表评论
-        article.article_comment(driver)
+        comment.comment_post(driver)
 
         # 发表文章
         article.article_post(driver)
-
-        # 删除文章测试
-        # open_url('https://zxsj.wanmei.com/zxworld/zxqsj-publish/article-detail.html?aid=')
-        # article.article_delete(driver)
 
         # 删除评论
         comment.comment_delete(driver)
