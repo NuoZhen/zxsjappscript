@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.common import NoSuchElementException
 
 # 配置日志
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -22,6 +22,8 @@ def login_by_cookies(driver, filename='cookies.txt'):
     # 尝试从文件中读取cookies
     try:
         cookies_loaded = cookies.read_cookies(driver, filename)
+        if test_login(driver, filename):
+            return True
     except (FileNotFoundError, json.JSONDecodeError) as e:
         logger.error(f"读取Cookies时发生错误: {e}")
         return False
@@ -40,13 +42,15 @@ def login_by_cookies(driver, filename='cookies.txt'):
                 json.dump(json_cookies, f)
             # 从文件中读取cookies并登录
             cookies.read_cookies(driver, filename)
+            if test_login(driver, filename):
+                return True
         except Exception as e:
             logger.error(f"Cookie解析错误: {e}")
             return False
 
 
+# 检查是否已经登录
 def test_login(driver, filename):
-    # 检查是否已经登录
     try:
         driver.find_element(By.CLASS_NAME, "login-btn")
         logger.error("登录失败，Cookie存在问题！")
