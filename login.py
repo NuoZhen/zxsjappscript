@@ -22,7 +22,7 @@ def login_by_cookies(driver, filename='cookies.txt'):
     # 尝试从文件中读取cookies
     try:
         cookies_loaded = cookies.read_cookies(driver, filename)
-        if test_login(driver, filename):
+        if cookies_loaded:
             return True
     except (FileNotFoundError, json.JSONDecodeError) as e:
         logger.error(f"读取Cookies时发生错误: {e}")

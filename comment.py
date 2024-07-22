@@ -118,7 +118,17 @@ def comment_delete(driver):
         # 使用JavaScript点击元素
         driver.execute_script("arguments[0].click();", delete_btns[0])
 
-        utils.find_confirm_btn(driver)
+        # 使用CSS选择器找到确认按钮
+        confirm_btn = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//a[@class='confirm' and @data-popup='confirm']"))
+        )
+        # 滚动到元素位置
+        driver.execute_script("arguments[0].scrollIntoView(true);", confirm_btn)
+        # 等待一点时间让页面响应
+        time.sleep(0.5)
+        # 使用JavaScript点击元素
+        driver.execute_script("arguments[0].click();", confirm_btn)
         logger.info("评论删除成功！")
         # 删除后不会跳转，且需要刷新，暂时先关闭，然后切回主页标签
         time.sleep(2)   # 等待一点时间让页面响应

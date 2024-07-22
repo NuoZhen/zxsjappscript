@@ -49,18 +49,3 @@ def url_info(driver):
     logger.info(f"当前页面标题：{driver.title}")
     logger.info(f"当前页面URL：{driver.current_url}")
 
-
-# 寻找确认按钮
-def find_confirm_btn(driver):
-    # 使用CSS选择器找到确认按钮
-    confirm_btn = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable(
-            (By.CSS_SELECTOR,
-             '.u-popup .popup-normal.confirm-popup .btn-box .confirm'))
-    )
-    # 滚动到元素位置
-    driver.execute_script("arguments[0].scrollIntoView(true);", confirm_btn)
-    # 等待一点时间让页面响应
-    time.sleep(0.5)
-    # 使用JavaScript点击元素
-    driver.execute_script("arguments[0].click();", confirm_btn)
