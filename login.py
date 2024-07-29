@@ -22,7 +22,7 @@ def login_by_cookies(driver, filename='cookies.txt'):
     # 尝试从文件中读取cookies
     try:
         cookies_loaded = cookies.read_cookies(driver, filename)
-        if cookies_loaded:
+        if cookies_loaded and test_login(driver, filename):
             return True
     except (FileNotFoundError, json.JSONDecodeError) as e:
         logger.error(f"读取Cookies时发生错误: {e}")
@@ -54,6 +54,8 @@ def test_login(driver, filename):
     try:
         driver.find_element(By.CLASS_NAME, "login-btn")
         logger.error("登录失败，Cookie存在问题！")
+        with open(filename, 'w') as f:
+            json.dump([], f)
         return False
     except NoSuchElementException:
         # 登录成功保存最新的cookies

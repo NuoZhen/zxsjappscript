@@ -2,7 +2,6 @@
 文章模块
 """
 import logging
-import random
 import time
 
 from selenium.webdriver.common.by import By
